@@ -1,0 +1,25 @@
+extends layout
+
+block scripts
+  script(src='/js/onboarding.js')
+
+block content
+  .page-header
+    h3 What types of email do you receive?
+  
+  div.col-sm-6.col-sm-offset-3
+    form(method='POST')
+      input(type='hidden', name='_csrf', value=_csrf)
+      #types-container
+        each item in types
+          .form-group
+            input.form-control.input-lg(type='text', name='types[]', placeholder='Enquiries, reports, \u2026', value=item)
+        else
+          .form-group
+            input.form-control.input-lg(type='text', name='types[]', placeholder='Enquiries, reports, \u2026')
+      .form-group
+        .text-center
+          button#btn-add-row.btn.btn-primary.btn-block.btn-lg(type='button')
+            | Add one more row
+          button.btn.btn-primary.btn-block.btn-lg(type='submit')
+            | Next

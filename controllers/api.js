@@ -22,9 +22,30 @@ const foursquare = require('node-foursquare')({
     redirectUrl: process.env.FOURSQUARE_REDIRECT_URL
   }
 });
+const ObjectId = require('mongoose').Types.ObjectId;
+const Language = require('@google-cloud/language');
+const Apiai = require('apiai');
+const WebSocket = require('ws');
+
+const User = require('../models/User');
 
 foursquare.Venues = bluebird.promisifyAll(foursquare.Venues);
 foursquare.Users = bluebird.promisifyAll(foursquare.Users);
+
+const language = Language({
+  projectId: process.env.GOOGLE_PROJECT_ID
+});
+
+const apiai = Apiai(process.env.APIAI_CLIENT_ACCESS_TOKEN);
+
+function apiaiTextRequest(text, options) {
+  return new Promise((resolve, reject) => {
+    const request = apiai.textRequest(text, options);
+    request.on('response', resolve);
+    request.on('error', reject);
+    request.end();
+  });
+}
 
 /**
  * GET /api
@@ -625,4 +646,101 @@ exports.getGoogleMaps = (req, res) => {
   res.render('api/google-maps', {
     title: 'Google Maps API'
   });
+};
+
+/**
+ * POST /api/webhooks/processor
+ * Receives emails from a domain.
+ */
+exports.postWebhooksProcessor = async function (req, res, next) {
+  req.assert('inboundMessage', 'Inbound message is required.').notEmpty();
+  const errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send(errors);
+  }
+
+  const inboundMessage = req.body.inboundMessage;
+  if (inboundMessage.to.email.startsWith('samples+')) {
+    const matches = inboundMessage.to.email.match(/samples\+(\w+)@/i);
+    const typeId = matches[1];
+    const user = await User.findOne({ 'emailTypes._id': typeId });
+    const type = user.emailTypes.id(typeId);
+    for (const client of req.wss.clients) {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(inboundMessage));
+      }
+    }
+    console.log(inboundMessage.subject);
+    type.samples.push(inboundMessage);
+    await user.save();
+    return res.status(204).send();
+  } else {
+    const entities = await language.detectEntities(inboundMessage.text);
+    const syntax = await language.detectSyntax(inboundMessage.text);
+    const sentences = syntax[1].sentences;
+    const chosenIntents = [];
+    const responses = [];
+    for (const sentence of sentences) {
+      console.log(`Sentence: ${sentence.text.content}`);
+      const apiaiResponse = await apiaiTextRequest(sentence.text.content, {  sessionId: inboundMessage.id.substring(0, 36) });
+      // apiaiResponse.result.action is input.unknown if not known
+      const intentId = apiaiResponse.result.metadata.intentId;
+      if (!apiaiResponse.result.actionIncomplete &&
+          apiaiResponse.result.action !== 'input.unknown' &&
+          chosenIntents.indexOf(intentId) < 0) {
+        const speech = apiaiResponse.result.fulfillment.speech;
+        responses.push(speech);
+        chosenIntents.push(intentId);
+      }
+    }
+
+    if (responses.length > 0) {
+      return res.send({
+        subject: `Re: ${inboundMessage.subject}`,
+        body: responses.join(' ')
+      });
+    } else {
+      return res.status(204).send();
+    }
+  }
+};
+
+/**
+ * POST /api/types/:id/test
+ */
+exports.postTypeTest = async function (req, res) {
+  req.assert('text', 'Test text should not be empty').notEmpty();
+  const errors = req.validationErrors();
+  if (errors) {
+    return res.status(400).send(errors);
+  }
+
+  const text = req.body.text;
+  const entities = await language.detectEntities(text);
+  const syntax = await language.detectSyntax(text);
+  const sentences = syntax[1].sentences;
+  const chosenIntents = [];
+  const responses = [];
+  for (const sentence of sentences) {
+    console.log(`Sentence: ${sentence.text.content}`);
+    const apiaiResponse = await apiaiTextRequest(sentence.text.content, {  sessionId: req.params.id });
+    // apiaiResponse.result.action is input.unknown if not known
+    const intentId = apiaiResponse.result.metadata.intentId;
+    if (!apiaiResponse.result.actionIncomplete &&
+        apiaiResponse.result.action !== 'input.unknown' &&
+        chosenIntents.indexOf(intentId) < 0) {
+      const speech = apiaiResponse.result.fulfillment.speech;
+      console.log(apiaiResponse);
+      responses.push(speech);
+      chosenIntents.push(intentId);
+    }
+  }
+
+  if (responses.length > 0) {
+    return res.send({
+      body: responses.join('\r\n')
+    });
+  } else {
+    return res.status(204).send();
+  }
 };

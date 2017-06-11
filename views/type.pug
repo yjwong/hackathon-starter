@@ -1,0 +1,36 @@
+extends layout
+
+block scripts
+  script(src='/js/type.js')
+
+block content
+  h1 Samples for "#{type.name}"
+  p.lead Samples allow you to correctly classify emails into distinct types.
+  hr
+
+  each sample in type.samples
+    div.panel.panel-default.sample-context(data-sample-id=sample._id)
+      div.panel-heading= sample.subject
+      div.panel-body
+        p.sample-text(style='white-space: pre-wrap', data-sample-id=sample._id)= sample.text
+      div.panel-heading Selected keywords
+      div.panel-body
+        form(method='POST', action=`/types/${type._id}/samples/${sample._id}/keywords`)
+          input(type='hidden', name='_csrf', value=_csrf)
+          p Highlight words from above to help identify this email.
+          .form-group
+            // TODO: Use true multiple selections.
+            input.input-selected-keywords.form-control(type='text', name='selectedKeywords', placeholder='Selected keywords\u2026')
+            span.help-block Words or phrases that helps to identify this email.
+          button.btn-save.btn.btn-primary(type='submit', style='margin-right: 8px') Save Keywords
+          button.btn-remove-all.btn.btn-danger(type='button') Remove All Keywords
+    hr
+
+  div.col-sm-8.col-sm-offset-2
+    p Send an email to this address to add a sample:
+    .form-group
+      input#email.form-control.input-lg(type='text', name='email', value=`samples+${type._id}@mail.wong.place`)
+    .form-group
+    .text-center
+      button#btn-copy-email.btn.btn-primary.btn-block.btn-lg(data-clipboard-target='#email')
+        | Click to copy email

@@ -23,7 +23,16 @@ const userSchema = new mongoose.Schema({
     location: String,
     website: String,
     picture: String
-  }
+  },
+
+  emailTypes: [{
+    name: String,
+    samples: [{
+      text: String,
+      subject: String,
+      keywords: [String]
+    }]
+  }]
 }, { timestamps: true });
 
 /**
@@ -63,6 +72,12 @@ userSchema.methods.gravatar = function gravatar(size) {
   }
   const md5 = crypto.createHash('md5').update(this.email).digest('hex');
   return `https://gravatar.com/avatar/${md5}?s=${size}&d=retro`;
+};
+
+userSchema.methods.addEmailType = function addEmailType(name) {
+  if (this.emailTypes.find(type => type.name === name) === undefined) {
+    this.emailTypes.push({ name });
+  }
 };
 
 const User = mongoose.model('User', userSchema);

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "dulcet-essence-87008",
+  "private_key_id": "b08ec4b771334ad9295d06d8567387d259950af9",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDEFZGVAo0JqOFX\nG6nnH4DI/P1hX9sffEd6tXk5cRPwpLYpwcx0CKmWuyfgpr6XVTyq2L3UbDnjmA78\nP6wg1GnNGGl7yejstomaIPtTvuVBVdQC5/CDD+aE6h/LXYnA+TPXHN+ncVM4e4+q\nov3HO9K0JcTOPvpKp2ak4GkrEMptNcvqioJzktuGYjVKr5xcC3ryIW7dQeF2mWYC\np7aOLeA2mLOQRTDnQ+XsYfuh3DnhbqUjpq5/zaO4QKl7VkwQeGew9azosGXFlcii\n/Axrg4ls8g9tFkffctasQLvvzkgwBEYA0WuZAOFnVuBOTHyGFqlwPixjjqHKdsPU\nlL9PsmbdAgMBAAECggEAETf/p8Eol2+QEjEos1YN3hhxO6rKODKWqEzlT0kBwkEE\nihgtlwbntYfL0aty0yE2CZ6s1MmIL9c7gaUpvVxJyivZn3g0jwzcen9o8oqx4RHj\nYznw4eF0kblpf1dAcISxq7MqZK7L6wrWq9pSRLuZHh6u8JmRKxsWJWZbdd+slvhZ\n4kXxPCEHZBumUvTI9A5dC+XuRmDWWFvXBagGW7z9C7fX9Tcd5mpQ01hCXsX1Kmzp\njJg+tSDP2pjzODiV2bx7F5URIscL7De3NucH988nTptREpdTe90V3VQmh9YOJ733\nXcbPWo6NdDSxH+QuynZKWPtaV4SpqgO+Xg9G5EcloQKBgQD1wKSaEw5pMOl6a4pW\nI3/t4e0FKcpeaR5NKtyxhHbjQMCowd4m3V6XlyeI50TJiFGKlM9Zh7++vc5VB5qF\nlp6I60YCQqf0TjMVNAVsDsmMn7sqe14RPsEDrjNRFtxDelS+kYiFRQtVxxE7Z281\nTtdoKd6e2f7E8x3TfTNrTZJNOQKBgQDMQroz5/TgbGDpjUq7qcju3rI0Cm0dfTbM\ncYY/izCGg9a43agoQ3J8CDlwDvYZ/UwUOAT1RPE/hxD28OrhMiySZFmmHkM3+4Qt\nbEiR6Y3xsQdmkmtMgUOm2MZiWg27Ull+deenaaBnhD3BheCsTA/BayEsWPx7cAok\ncJLLpJ7KxQKBgHs7/07D/5YAURRymQxZAO3pPVI5gqGVVPydYc4i/vs2nWYC0cPr\nfmPGCK0+S+BD26ACv3fF+wFLbQx2o6YZwaYnVRQNGOwJytP3IkDtqWQ7NUA4XROI\nxIFz+YfQTuQHlDd8A1nRJb399UY0uC+jOaGiXWCLMJbS00Iapo5Id/UBAoGAEw/X\nGKj47Uiv8pvA8apymfgmYTzn2eyphILDqIJw0NzU2QO2gatpr7GEyrRauyosQ2bG\n76yzZt5P8vugr8ti5XZ/90SzuTG7sBF+5D8LhBalPilD4iveCGAKg3sr9ONGfsq6\nB6GP2pk4uiqoQOwIPGCnA+B6D3rxN11aFa8TMpECgYBGXedlBh4Uw/RalcRDRELY\nPwcuavbyZOTPkQ7OG8L7GduKLnOj5c3dq+AM7u+YlvZbvQhWPGly4Y6d5LY/ZNel\nwloOvN3Z3Ho7WOqJMTaHRe+QLTI+go7TaCHTIzQAjx0LBQdhIKvETPJnDxuK9Npq\nAffpzwItTaLuiWpXX7r5pA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "nacre-falcon@dulcet-essence-87008.iam.gserviceaccount.com",
+  "client_id": "113395262375208290266",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/nacre-falcon%40dulcet-essence-87008.iam.gserviceaccount.com"
+}

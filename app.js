@@ -1,6 +1,7 @@
 /**
  * Module dependencies.
  */
+const http = require('http');
 const express = require('express');
 const compression = require('compression');
 const session = require('express-session');
@@ -19,6 +20,7 @@ const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 const sass = require('node-sass-middleware');
 const multer = require('multer');
+const WebSocket = require('ws');
 
 const upload = multer({ dest: path.join(__dirname, 'uploads') });
 
@@ -34,6 +36,8 @@ const homeController = require('./controllers/home');
 const userController = require('./controllers/user');
 const apiController = require('./controllers/api');
 const contactController = require('./controllers/contact');
+const onboardingController = require('./controllers/onboarding');
+const typesController = require('./controllers/types');
 
 /**
  * API keys and Passport configuration.
@@ -44,6 +48,11 @@ const passportConfig = require('./config/passport');
  * Create Express server.
  */
 const app = express();
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+wss.on('connection', (ws, req) => {
+  ws.req = req;
+});
 
 /**
  * Connect to MongoDB.
@@ -86,7 +95,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use((req, res, next) => {
-  if (req.path === '/api/upload') {
+  if (req.path === '/api/upload' ||
+      req.path === '/api/webhooks/processor' ||
+      /\/api\/types\/\w+\/test/.test(req.path)) {
     next();
   } else {
     lusca.csrf()(req, res, next);
@@ -96,6 +107,10 @@ app.use(lusca.xframe('SAMEORIGIN'));
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
   res.locals.user = req.user;
+  next();
+});
+app.use((req, res, next) => {
+  req.wss = wss;
   next();
 });
 app.use((req, res, next) => {
@@ -134,6 +149,12 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
+app.get('/onboarding', passportConfig.isAuthenticated, onboardingController.getOnboarding);
+app.post('/onboarding', passportConfig.isAuthenticated, onboardingController.postOnboarding);
+app.get('/types', passportConfig.isAuthenticated, typesController.getTypes);
+app.get('/types/:id', passportConfig.isAuthenticated, typesController.getType);
+app.post('/types/:id/samples/:sampleId/keywords', passportConfig.isAuthenticated, typesController.postTypeSampleSaveKeywords);
+app.get('/types/:id/responses', passportConfig.isAuthenticated, typesController.getTypeResponses);
 
 /**
  * API examples routes.
@@ -167,6 +188,8 @@ app.post('/api/upload', upload.single('myFile'), apiController.postFileUpload);
 app.get('/api/pinterest', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getPinterest);
 app.post('/api/pinterest', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.postPinterest);
 app.get('/api/google-maps', apiController.getGoogleMaps);
+app.post('/api/webhooks/processor', apiController.postWebhooksProcessor);
+app.post('/api/types/:id/test', apiController.postTypeTest);
 
 /**
  * OAuth authentication routes. (Sign in)
@@ -224,7 +247,7 @@ app.use(errorHandler());
 /**
  * Start Express server.
  */
-app.listen(app.get('port'), () => {
+server.listen(app.get('port'), () => {
   console.log('%s App is running at http://localhost:%d in %s mode', chalk.green('✓'), app.get('port'), app.get('env')); 
   console.log('  Press CTRL-C to stop\n');
 });

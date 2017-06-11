@@ -1,0 +1,29 @@
+extends layout
+
+block scripts
+  script(src='/js/type-responses.js')
+  script
+    | const UI = {
+    |   typeId: '#{type._id}'
+    | };
+
+block content
+  h1 Responses for "#{type.name}"
+  p.lead You can generate responses using API.ai.
+  hr
+
+  form#test-form(method='POST')
+    h3 Test SmartReply
+    input(type='hidden', name='_csrf', csrf=_csrf)
+    .form-group
+      textarea.form-control(name='testText', placeholder='Paste an email\u2026', rows='12')
+      p.help-text Paste an email here to test your SmartReply.
+    .form-group
+      button.btn.btn-primary(type='submit') Get Response
+    div#test-response.well(style='white-space: pre-wrap;')
+      em Click the button above to get a response.
+  hr
+
+  a.btn.btn-primary.btn-lg(href='https://console.api.ai/api-client/#/agent/9e2441b6-1423-442a-988f-905c81a4283a/intents', rel='external', target='_blank')
+    | Configure Responses on API.ai 
+    i.fa.fa-external-link

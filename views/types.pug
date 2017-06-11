@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1 Email Types
+  p.lead Configure the types of emails you'd like to process automatically.
+  hr
+
+  each item in types
+    div.col-sm-4
+      div.panel.panel-default
+        div.panel-heading
+          strong= item.name
+        div.panel-body
+          .form-group
+            a.btn.btn-primary(href=`/types/${item._id}`)
+              | Configure Samples
+          .form-group
+            a.btn.btn-primary(href=`/types/${item._id}/responses`)
+              | Configure Responses
+  else
+    div
+      | There are no items.

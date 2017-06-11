@@ -1,7 +1,7 @@
 // Brand Colors
 // -------------------------
 
-$brand-primary: #4d90fc;
+$brand-primary: #19bbd2;
 $brand-success: #60bf60;
 $brand-warning: #ff9800;
 $brand-danger: #de4b33;
@@ -10,6 +10,7 @@ $brand-info: #5bc0dd;
 // Typography
 // -------------------------
 
+$font-family-sans-serif:  "Muli", "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 $headings-font-family: "HelveticaNeue-CondensedBold", "Helvetica Neue", Arial, sans-serif;
 
 // Buttons
@@ -24,8 +25,7 @@ $btn-info-border: darken($brand-info, 3.2%);
 // Forms
 // -------------------------
 
-$input-border-radius: 0;
-$input-border-focus: #2598f9;
+$input-border-focus: $brand-primary;
 
 // Form states and alerts
 // -------------------------
@@ -50,11 +50,11 @@ $state-danger-border: #e0b1b8;
 // Navbar
 // -------------------------
 
-$navbar-default-bg: rgba(255, 255, 255, 0.9);
+$navbar-default-bg: rgba(0, 180, 205, 0.9);
 $navbar-default-link-color: #252525;
-$navbar-default-link-hover-color: #4da5f4;
-$navbar-default-link-active-color: #4da5f4;
+$navbar-default-link-hover-color: white;
+$navbar-default-link-active-color: white;
 $navbar-default-link-hover-bg: transparent;
 $navbar-default-link-active-bg: transparent;
 $navbar-default-color: #fafafa;
-$navbar-default-brand-hover-color: #4da5f4;
+$navbar-default-brand-hover-color: white;
