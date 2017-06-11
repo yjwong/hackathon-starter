@@ -13,6 +13,7 @@ block content
       p Your SmartReply email address is:
       .form-group
         input#email.form-control.input-lg(type='text', value=`bot+${user._id}@mail.wong.place`)
+        span.help-text Forward your emails here to have SmartReply respond to them automatically.
       .text-center
         button#btn-copy-email.btn.btn-primary.btn-block.btn-lg(data-clipboard-target='#email')
           | Click to copy email

@@ -33,8 +33,10 @@ fuse.setupServer(3001, function (err, server) {
   fuse.setupEndpoint(server, function () {
   	fuse.on('email_received', async function (responder, inboundMessage) {
       const webResponse = await axios.post(process.env.WEB_WEBHOOK, { inboundMessage });
+      console.log(webResponse.status);
+      console.log(webResponse.data);
       if (webResponse.status === 200) {
-        responder.send(webResponse.data);
+        responder.reply(webResponse.data);
       }
     });
   });

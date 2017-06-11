@@ -689,15 +689,16 @@ exports.postWebhooksProcessor = async function (req, res, next) {
           apiaiResponse.result.action !== 'input.unknown' &&
           chosenIntents.indexOf(intentId) < 0) {
         const speech = apiaiResponse.result.fulfillment.speech;
-        responses.push(speech);
+        Array.prototype.push.apply(responses, apiaiResponse.result.fulfillment.messages.map(message => message.speech));
         chosenIntents.push(intentId);
       }
     }
 
     if (responses.length > 0) {
       return res.send({
-        subject: `Re: ${inboundMessage.subject}`,
-        body: responses.join(' ')
+        body: responses.join('\r\n\r\n').trim()
+          .replace(/\r\n/g, '<br>')
+          .replace(/\n/g, '<br>')
       });
     } else {
       return res.status(204).send();
