@@ -730,15 +730,14 @@ exports.postTypeTest = async function (req, res) {
         apiaiResponse.result.action !== 'input.unknown' &&
         chosenIntents.indexOf(intentId) < 0) {
       const speech = apiaiResponse.result.fulfillment.speech;
-      console.log(apiaiResponse);
-      responses.push(speech);
+      Array.prototype.push.apply(responses, apiaiResponse.result.fulfillment.messages.map(message => message.speech));
       chosenIntents.push(intentId);
     }
   }
 
   if (responses.length > 0) {
     return res.send({
-      body: responses.join('\r\n')
+      body: responses.join('\r\n\r\n').trim()
     });
   } else {
     return res.status(204).send();
